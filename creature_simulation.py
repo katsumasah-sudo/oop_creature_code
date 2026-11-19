@@ -58,13 +58,39 @@ class SwimmingCreature(Creature):
             target.hp = 0
 
 
+class FireCreature(Creature):
+    def __init__(self, name, hp, attack_power, fire_level=50):
+        super().__init__(name, hp, attack_power)
+        self.fire_level = max(0, min(100, fire_level))
+
+    def emit_fire(self, new_fire_level):
+        self.fire_level = max(0, min(100, new_fire_level))
+        print(f"{self.name} sets fire level to {self.fire_level}!")
+
+    def attack(self, target):
+        if not self.is_alive():
+            print(f"{self.name} cannot attack because it is defeated.")
+            return
+        total_damage = self.attack_power + (self.fire_level // 10)
+        print(f"{self.name} breathes fire (level {self.fire_level}) at {target.name} for {total_damage} damage!")
+        target.hp -= total_damage
+        if target.hp < 0:
+            target.hp = 0
+
+
 if __name__ == "__main__":
     hawk = FlyingCreature("Sky Hawk", 50, 8)
     shark = SwimmingCreature("Deep Shark", 60, 12)
-    dummy = Creature("Practice Dummy", 80, 0)
+    drake = FireCreature("Flame Drake", 70, 10, fire_level=40)
+    dummy = Creature("Practice Dummy", 100, 0)
 
     hawk.fly_to(120)
     hawk.attack(dummy)
+
     shark.dive_to(30)
     shark.attack(dummy)
+
+    drake.emit_fire(80)
+    drake.attack(dummy)
+
     print(dummy)
